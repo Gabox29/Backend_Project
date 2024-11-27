@@ -1,4 +1,4 @@
-const { Category, Order, Product, Sequelize } = require("../models/index");
+const { Category, Product, CategoryProduct, OrderProduct, Sequelize } = require("../models/index");
 const { Op } = Sequelize;
 
 const ProductController = {
@@ -23,6 +23,44 @@ const ProductController = {
       product.setCategories(req.body.CategoryId);
       product.setOrders(req.body.OrderId);
       res.send({ message: "Product updated successfully", product });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Something is wrong", error });
+    }
+  },
+  async delete(req, res) {
+    try {
+      await Product.destroy({
+        where: {
+          id: req.params.id,
+        },
+      });
+      await CategoryProduct.destroy({
+        where: {
+          ProductId: req.params.id,
+        },
+      });
+      await OrderProduct.destroy({
+        where: {
+          ProductId: req.params.id,
+        },
+      });
+      res.send({ message: `Product with id ${req.params.id} deleted` });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Something is wrong", error });
+    }
+  },
+  async getAll(req, res) {
+    try {
+      const products = await Product.findAll({
+        include: {
+          model: Category,
+          attributes: ["description"],
+          through: { attributes: [] },
+        },
+      });
+      res.status(200).send(products);
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Something is wrong", error });
