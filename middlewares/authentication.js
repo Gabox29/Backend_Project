@@ -23,4 +23,14 @@ const authentication = async (req, res, next) => {
     res.status(500).send({ error, message: "There has been a problem with the token" });
   }
 };
-module.exports = { authentication };
+const isAdmin = async (req, res, next) => {
+  const admins = ["admin", "superadmin"];
+  if (!admins.includes(req.user.role)) {
+    return res.status(403).send({
+      message: "You don't have the permissions",
+    });
+  }
+  next();
+};
+
+module.exports = { authentication, isAdmin };
