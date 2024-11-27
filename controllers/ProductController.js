@@ -1,4 +1,4 @@
-const { Category, Product, Sequelize } = require("../models/index");
+const { Category, Order, Product, Sequelize } = require("../models/index");
 const { Op } = Sequelize;
 
 const ProductController = {
@@ -21,6 +21,7 @@ const ProductController = {
       });
       const product = await Product.findByPk(req.params.id);
       product.setCategories(req.body.CategoryId);
+      product.setOrders(req.body.OrderId);
       res.send({ message: "product updated successfully", product });
     } catch (error) {
       console.error(error);
