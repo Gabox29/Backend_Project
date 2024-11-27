@@ -1,4 +1,4 @@
-const { User, Token } = require("../models/index");
+const { User, Order, Product, Token } = require("../models/index");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { jwt_secret } = require("../config/config.json")["development"];
@@ -30,6 +30,29 @@ const UserController = {
     let token = jwt.sign({ id: user.id }, jwt_secret);
     await Token.create({ token, UserId: user.id }); //guardar Token en la tabla Tokens
     res.send({ token, message: "Successfully logged", user });
+  },
+  async getAll(req, res) {
+    try {
+      const users = await User.findAll({
+        include: [
+          {
+            model: Order,
+            attributes: ["date"],
+            include: [
+              {
+                model: Product,
+                attributes: ['description', 'price'], 
+                through: { attributes: [] }, // Don't return the join table data
+              },
+            ],
+          },
+        ],
+      });
+      res.status(200).send(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Something is wrong", error });
+    }
   },
 };
 
