@@ -109,6 +109,20 @@ const ProductController = {
       res.status(500).send({ message: "Something is wrong", error });
     }
   },
+  async getAllOrderDesc(req, res) {
+    try {
+      const products = await Product.findAll({
+        attributes: ["id", "description", "price"],
+        order: [
+          ['price', 'DESC'], 
+        ],
+      });
+      res.send(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Something is wrong", error });
+    }
+  },
 };
 
 module.exports = ProductController;
