@@ -41,7 +41,7 @@ const UserController = {
             include: [
               {
                 model: Product,
-                attributes: ['description', 'price'], 
+                attributes: ["description", "price"],
                 through: { attributes: [] }, // Don't return the join table data
               },
             ],
@@ -52,6 +52,19 @@ const UserController = {
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Something is wrong", error });
+    }
+  },
+  async logout(req, res) {
+    try {
+      await Token.destroy({
+        where: {
+          [Op.and]: [{ UserId: req.user.id }, { token: req.headers.authorization }],
+        },
+      });
+      res.send({ message: "Successfully logged out" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: "There was a problem trying to log you out" });
     }
   },
 };
