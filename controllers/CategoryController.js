@@ -1,4 +1,4 @@
-const { Category, Product, Sequelize  } = require("../models/index");
+const { Category, Product, Sequelize } = require("../models/index");
 const { Op } = Sequelize;
 
 const CategoryController = {
@@ -71,6 +71,7 @@ const CategoryController = {
         include: {
           model: Product,
           attributes: ["description", "price"],
+          through: { attributes: [] },
         },
       });
       res.status(200).send(categories);
