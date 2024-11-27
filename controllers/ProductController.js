@@ -2,13 +2,14 @@ const { Category, Product, CategoryProduct, OrderProduct, Sequelize } = require(
 const { Op } = Sequelize;
 
 const ProductController = {
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const product = await Product.create(req.body);
       product.addCategory(req.body.CategoryId);
       res.status(201).send({ message: "Product created successfully", product });
     } catch (error) {
       console.error(error);
+      next(error)
       res.status(500).send({ message: "Something is wrong", error });
     }
   },
