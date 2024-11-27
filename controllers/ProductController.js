@@ -66,6 +66,33 @@ const ProductController = {
       res.status(500).send({ message: "Something is wrong", error });
     }
   },
+  async getById(req, res) {
+    try {
+      const product = await Product.findByPk(req.params.id, {
+        attributes: ["id", "description", "price"],
+      });
+      res.send(product);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Something is wrong", error });
+    }
+  },
+  async getByDescription(req, res) {
+    try {
+      const products = await Product.findAll({
+        attributes: ["id", "description"],
+        where: {
+          description: {
+            [Op.like]: `%${req.params.description}%`,
+          },
+        },
+      });
+      res.send(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Something is wrong", error });
+    }
+  },
 };
 
 module.exports = ProductController;
