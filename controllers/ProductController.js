@@ -1,4 +1,4 @@
-const { Category, Product, CategoryProduct, OrderProduct, Sequelize } = require("../models/index");
+const { Product, Category, CategoryProduct, OrderProduct, Review, Sequelize } = require("../models/index");
 const { Op } = Sequelize;
 
 const ProductController = {
@@ -9,7 +9,7 @@ const ProductController = {
       res.status(201).send({ message: "Product created successfully", product });
     } catch (error) {
       console.error(error);
-      next(error)
+      next(error);
       res.status(500).send({ message: "Something is wrong", error });
     }
   },
@@ -55,11 +55,18 @@ const ProductController = {
   async getAll(req, res) {
     try {
       const products = await Product.findAll({
-        include: {
-          model: Category,
-          attributes: ["description"],
-          through: { attributes: [] },
-        },
+        attributes: ["description", "price"],
+        include: [
+          {
+            model: Category,
+            attributes: ["description"],
+            through: { attributes: [] },
+          },
+          {
+            model: Review,
+            attributes: ["description", "date"],
+          },
+        ],
       });
       res.status(200).send(products);
     } catch (error) {
@@ -71,6 +78,17 @@ const ProductController = {
     try {
       const product = await Product.findByPk(req.params.id, {
         attributes: ["id", "description", "price"],
+        include: [
+          {
+            model: Category,
+            attributes: ["description"],
+            through: { attributes: [] },
+          },
+          {
+            model: Review,
+            attributes: ["description", "date"],
+          },
+        ],
       });
       res.send(product);
     } catch (error) {
@@ -114,9 +132,7 @@ const ProductController = {
     try {
       const products = await Product.findAll({
         attributes: ["id", "description", "price"],
-        order: [
-          ['price', 'DESC'], 
-        ],
+        order: [["price", "DESC"]],
       });
       res.send(products);
     } catch (error) {
