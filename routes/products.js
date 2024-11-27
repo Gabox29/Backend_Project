@@ -8,5 +8,6 @@ router.delete("/id/:id", ProductController.delete);
 router.get("/getAll", ProductController.getAll);
 router.get("/id/:id", ProductController.getById);
 router.get("/description/:description", ProductController.getByDescription);
+router.get("/price/:price", ProductController.getByPriceGt);
 
 module.exports = router;

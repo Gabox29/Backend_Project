@@ -80,10 +80,26 @@ const ProductController = {
   async getByDescription(req, res) {
     try {
       const products = await Product.findAll({
-        attributes: ["id", "description"],
+        attributes: ["id", "description", "price"],
         where: {
           description: {
             [Op.like]: `%${req.params.description}%`,
+          },
+        },
+      });
+      res.send(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Something is wrong", error });
+    }
+  },
+  async getByPriceGt(req, res) {
+    try {
+      const products = await Product.findAll({
+        attributes: ["id", "description", "price"],
+        where: {
+          price: {
+            [Op.gt]: parseFloat(req.params.price),
           },
         },
       });
