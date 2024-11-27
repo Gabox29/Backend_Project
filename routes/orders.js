@@ -3,6 +3,6 @@ const OrderController = require("../controllers/OrderController");
 const router = express.Router();
 
 router.post("/", OrderController.create);
-// router.put("/id/:id", OrderController.update);
+router.get("/getAll", OrderController.getAll);
 
 module.exports = router;

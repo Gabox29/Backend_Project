@@ -22,7 +22,7 @@ const ProductController = {
       const product = await Product.findByPk(req.params.id);
       product.setCategories(req.body.CategoryId);
       product.setOrders(req.body.OrderId);
-      res.send({ message: "product updated successfully", product });
+      res.send({ message: "Product updated successfully", product });
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Something is wrong", error });
